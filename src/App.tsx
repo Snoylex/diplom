@@ -1,14 +1,16 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import MenuPage from './pages/Menu';     // ← добавь этот импорт
+
 function App() {
   return (
-    <div className="min-h-screen bg-orange-50 flex items-center justify-center">
-      <div className="bg-white p-10 rounded-3xl shadow-xl text-center">
-        <h1 className="text-4xl font-bold text-orange-600 mb-4">
-          Моё кафе — привет из React!
-        </h1>
-        <p className="text-gray-600">Tailwind работает! Классы пишу прямо здесь.</p>
-      </div>
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/menu" element={<MenuPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
