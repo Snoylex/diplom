@@ -6,14 +6,19 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { ShoppingCart } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
 
 interface Props {
   dish: any;
   isOpen: boolean;
   onClose: () => void;
+  onAddToOrder: (dish: any) => void;   // для первого добавления
 }
 
-export default function DishModal({ dish, isOpen, onClose }: Props) {
+export default function DishModal({ dish, isOpen, onClose, onAddToOrder }: Props) {
+  const { addToCart } = useCart();   // для последующих добавлений
+
   if (!dish) return null;
 
   const name = dish.Name_blyuda || 'Без названия';
@@ -23,23 +28,32 @@ export default function DishModal({ dish, isOpen, onClose }: Props) {
 
   const imageUrl = `/images/dishes/${photoName}`;
 
+	const handleAdd = () => {
+
+
+		// ВСЕГДА добавляем в корзину
+		addToCart(dish);
+		const hasExistingOrder = localStorage.getItem('burekas_customer_data');
+		
+		if (!hasExistingOrder) {
+			onAddToOrder(dish);   // открыть форму
+		}
+
+		onClose();
+		};
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl p-0 overflow-hidden">
-        
-        {/* Большое фото */}
         <div className="relative">
           <img 
             src={imageUrl}
             alt={name}
             className="w-full h-80 object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/images/dishes/default.jpg';
-            }}
+            onError={(e) => (e.target as HTMLImageElement).src = '/images/dishes/default.jpg'}
           />
         </div>
 
-        {/* Контент */}
         <div className="p-8">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold">{name}</DialogTitle>
@@ -60,9 +74,8 @@ export default function DishModal({ dish, isOpen, onClose }: Props) {
             >
               Закрыть
             </Button>
-            <Button className="flex-1 py-6 text-lg bg-orange-500 hover:bg-orange-600">
-              Добавить в заказ
-            </Button>
+
+            
           </div>
         </div>
       </DialogContent>

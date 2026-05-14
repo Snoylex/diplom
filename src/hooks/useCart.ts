@@ -1,7 +1,26 @@
 import { useState, useEffect } from 'react';
-import { CartItem, CustomerData, Cart } from '../types/cart';
 
 const CART_STORAGE_KEY = 'burekas_cart';
+
+export interface CartItem {
+  dishId: number;
+  name: string;
+  price: number;
+  quantity: number;
+  foto: string;
+}
+
+export interface CustomerData {
+  fio: string;
+  phone: string;
+  address: string;
+  comment: string;
+}
+
+export interface Cart {
+  items: CartItem[];
+  customer: CustomerData | null;
+}
 
 export function useCart() {
   const [cart, setCart] = useState<Cart>({
@@ -9,17 +28,26 @@ export function useCart() {
     customer: null,
   });
 
-  // Загрузка корзины из localStorage
+  // Загрузка из localStorage при каждом монтировании
   useEffect(() => {
-    const saved = localStorage.getItem(CART_STORAGE_KEY);
-    if (saved) {
-      setCart(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setCart(parsed);
+      }
+    } catch (e) {
+      console.error("Ошибка загрузки корзины из localStorage", e);
     }
   }, []);
 
-  // Сохранение корзины в localStorage
+  // Сохранение в localStorage при изменении
   useEffect(() => {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    } catch (e) {
+      console.error("Ошибка сохранения корзины", e);
+    }
   }, [cart]);
 
   const addToCart = (dish: any) => {
@@ -70,10 +98,6 @@ export function useCart() {
     }));
   };
 
-  const setCustomerData = (customer: CustomerData) => {
-    setCart((prev) => ({ ...prev, customer }));
-  };
-
   const clearCart = () => {
     setCart({ items: [], customer: null });
     localStorage.removeItem(CART_STORAGE_KEY);
@@ -87,7 +111,6 @@ export function useCart() {
     addToCart,
     updateQuantity,
     removeItem,
-    setCustomerData,
     clearCart,
     totalItems,
     totalPrice,

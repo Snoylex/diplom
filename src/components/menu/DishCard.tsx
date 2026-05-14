@@ -45,7 +45,7 @@ export default function DishCard({ dish, onClick, onAddToCart }: Props) {
         <Button 
           className="mt-6 w-full bg-orange-500 hover:bg-orange-600"
           onClick={(e) => {
-            e.stopPropagation();        // важно! чтобы не открывалась модалка блюда
+            e.stopPropagation();       
             onAddToCart(dish);
           }}
         >
