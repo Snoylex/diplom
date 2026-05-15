@@ -48,12 +48,12 @@ const [selectedImage, setSelectedImage] =
       const url = user
 
         ? `
-          http://cu943745.tw1.ru
+          http://localhost:5000
           /api/reviews?userId=${user.id}
         `.replace(/\s/g, '')
 
         : `
-          http://cu943745.tw1.ru
+          http://localhost:5000
           /api/reviews
         `.replace(/\s/g, '');
 
@@ -64,7 +64,7 @@ const [selectedImage, setSelectedImage] =
         await reviewsRes.json();
 
       const ratingRes = await fetch(
-        'http://cu943745.tw1.ru/api/reviews-rating'
+        'http://localhost:5000/api/reviews-rating'
       );
 
       const rating =
@@ -121,7 +121,7 @@ const [selectedImage, setSelectedImage] =
     );
 
     const res = await fetch(
-      'http://cu943745.tw1.ru/api/upload-review-photo',
+      'http://localhost:5000/api/upload-review-photo',
       {
         method: 'POST',
         body: formData,
@@ -153,7 +153,7 @@ const [selectedImage, setSelectedImage] =
     if (editingId) {
 
       await fetch(
-        `http://cu943745.tw1.ru/api/reviews/${editingId}`,
+        `http://localhost:5000/api/reviews/${editingId}`,
         {
           method: 'PUT',
 
@@ -173,7 +173,7 @@ const [selectedImage, setSelectedImage] =
     } else {
 
       await fetch(
-        'http://cu943745.tw1.ru/api/reviews',
+        'http://localhost:5000/api/reviews',
         {
           method: 'POST',
 
@@ -253,7 +253,7 @@ const [selectedImage, setSelectedImage] =
     ) return;
 
     await fetch(
-      `http://cu943745.tw1.ru/api/reviews/${id}`,
+      `http://localhost:5000/api/reviews/${id}`,
       {
         method: 'DELETE',
 
@@ -514,7 +514,7 @@ const [selectedImage, setSelectedImage] =
 
   {photo && (
     <img
-      src={`http://cu943745.tw1.ru/images/reviews/${photo}`}
+      src={`http://localhost:5000/images/reviews/${photo}`}
       className="
         w-full
         max-w-md
@@ -527,7 +527,7 @@ const [selectedImage, setSelectedImage] =
       "
       onClick={() =>
         window.open(
-          `http://cu943745.tw1.ru/images/reviews/${photo}`,
+          `http://localhost:5000/images/reviews/${photo}`,
           '_blank'
         )
       }
@@ -792,11 +792,11 @@ const [selectedImage, setSelectedImage] =
 			{review.Photo && (
 
 			<img
-				src={`http://cu943745.tw1.ru/images/reviews/${review.Photo}`}
+				src={`http://localhost:5000/images/reviews/${review.Photo}`}
 
 				onClick={() =>
 				setSelectedImage(
-					`http://cu943745.tw1.ru/images/reviews/${review.Photo}`
+					`http://localhost:5000/images/reviews/${review.Photo}`
 				)
 				}
 

@@ -70,7 +70,7 @@ export default function Login() {
 
     try {
       const response = await fetch(
-        'http://cu943745.tw1.ru/api/login',
+        'http://localhost:5000/api/login',
         {
           method: 'POST',
 

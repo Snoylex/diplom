@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
 
   const sendCode = async () => {
     const res = await fetch(
-      'http://cu943745.tw1.ru/api/password/send-code',
+      'http://localhost:5000/api/password/send-code',
       {
         method: 'POST',
         headers: {
@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
 
   const resetPassword = async () => {
     const res = await fetch(
-      'http://cu943745.tw1.ru/api/password/reset',
+      'http://localhost:5000/api/password/reset',
       {
         method: 'POST',
         headers: {

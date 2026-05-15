@@ -4,7 +4,7 @@ export default function AdminReviewsPage() {
   const [reviews, setReviews] = useState([]);
 
   const loadReviews = async () => {
-    const res = await fetch('http://cu943745.tw1.ru/api/reviews/all');
+    const res = await fetch('http://localhost:5000/api/reviews/all');
     const data = await res.json();
 
     setReviews(data);
@@ -16,7 +16,7 @@ export default function AdminReviewsPage() {
 
   const toggleModeration = async (id: number) => {
     await fetch(
-      `http://cu943745.tw1.ru/api/admin/reviews/moderate/${id}`,
+      `http://localhost:5000/api/admin/reviews/moderate/${id}`,
       {
         method: 'PATCH',
       }
@@ -27,7 +27,7 @@ export default function AdminReviewsPage() {
 
   const deleteReview = async (id: number) => {
     await fetch(
-      `http://cu943745.tw1.ru/api/admin/reviews/${id}`,
+      `http://localhost:5000/api/admin/reviews/${id}`,
       {
         method: 'DELETE',
       }

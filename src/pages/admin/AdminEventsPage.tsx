@@ -26,7 +26,7 @@ export default function AdminEventsPage() {
     try {
 
       const res = await fetch(
-        'http://cu943745.tw1.ru/api/admin/events'
+        'http://localhost:5000/api/admin/events'
       );
 
       const data = await res.json();
@@ -55,7 +55,7 @@ export default function AdminEventsPage() {
       formData.append('image', file);
 
       const res = await fetch(
-        'http://cu943745.tw1.ru/api/upload-promotion-image',
+        'http://localhost:5000/api/upload-promotion-image',
         {
           method: 'POST',
           body: formData,
@@ -83,8 +83,8 @@ export default function AdminEventsPage() {
     try {
 
       const url = editingId
-        ? `http://cu943745.tw1.ru/api/admin/events/${editingId}`
-        : 'http://cu943745.tw1.ru/api/admin/events';
+        ? `http://localhost:5000/api/admin/events/${editingId}`
+        : 'http://localhost:5000/api/admin/events';
 
       const method = editingId
         ? 'PUT'
@@ -123,7 +123,7 @@ export default function AdminEventsPage() {
     try {
 
       await fetch(
-        `http://cu943745.tw1.ru/api/admin/events/${id}`,
+        `http://localhost:5000/api/admin/events/${id}`,
         {
           method: 'DELETE',
         }
@@ -270,7 +270,7 @@ export default function AdminEventsPage() {
           {form.Izobrazhenie && (
 
             <img
-              src={`http://cu943745.tw1.ru/images/promotions/${form.Izobrazhenie}`}
+              src={`http://localhost:5000/images/promotions/${form.Izobrazhenie}`}
               className="w-52 h-52 object-cover rounded-2xl mx-auto mt-5"
             />
 
@@ -323,7 +323,7 @@ export default function AdminEventsPage() {
           >
 
             <img
-              src={`http://cu943745.tw1.ru/images/promotions/${event.Izobrazhenie}`}
+              src={`http://localhost:5000/images/promotions/${event.Izobrazhenie}`}
               className="w-full md:w-64 h-64 object-cover rounded-2xl"
             />
 

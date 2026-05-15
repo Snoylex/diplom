@@ -12,7 +12,7 @@ export default function EventsPage() {
 
   const loadEvents = async () => {
     const res = await fetch(
-      'http://cu943745.tw1.ru/api/admin/events'
+      'http://localhost:5000/api/admin/events'
     );
 
     const data = await res.json();
@@ -73,11 +73,11 @@ export default function EventsPage() {
             {/* IMAGE */}
             <div className="relative">
               <img
-                src={`http://cu943745.tw1.ru/images/promotions/${event.Izobrazhenie}`}
+                src={`http://localhost:5000/images/promotions/${event.Izobrazhenie}`}
                 alt=""
                 onClick={() =>
                   setSelectedImage(
-                    `http://cu943745.tw1.ru/images/promotions/${event.Izobrazhenie}`
+                    `http://localhost:5000/images/promotions/${event.Izobrazhenie}`
                   )
                 }
                 className="

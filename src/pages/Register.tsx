@@ -54,7 +54,7 @@ export default function Register() {
 
       const response = await fetch(
 
-        'http://cu943745.tw1.ru/api/register',
+        'http://localhost:5000/api/register',
 
         {
           method: 'POST',

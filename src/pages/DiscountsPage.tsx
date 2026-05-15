@@ -6,7 +6,7 @@ export default function DiscountsPage() {
   const [promotions, setPromotions] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://cu943745.tw1.ru/api/admin/promotions')
+    fetch('http://localhost:5000/api/admin/promotions')
       .then((res) => res.json())
       .then((data) => {
         const active = data.filter(

@@ -18,19 +18,19 @@ export default function AdminPromotionsPage() {
   const loadData = async () => {
 
     const promoRes = await fetch(
-      'http://cu943745.tw1.ru/api/admin/promotions'
+      'http://localhost:5000/api/admin/promotions'
     );
 
     const promoData = await promoRes.json();
 
     const dishRes = await fetch(
-      'http://cu943745.tw1.ru/api/admin/dishes'
+      'http://localhost:5000/api/admin/dishes'
     );
 
     const dishData = await dishRes.json();
 
     const catRes = await fetch(
-      'http://cu943745.tw1.ru/api/categories'
+      'http://localhost:5000/api/categories'
     );
 
     const catData = await catRes.json();
@@ -47,7 +47,7 @@ export default function AdminPromotionsPage() {
   const createPromotion = async () => {
 
     await fetch(
-      'http://cu943745.tw1.ru/api/admin/promotions',
+      'http://localhost:5000/api/admin/promotions',
       {
         method: 'POST',
         headers: {
@@ -87,7 +87,7 @@ export default function AdminPromotionsPage() {
   const togglePromotion = async (id: number) => {
 
   await fetch(
-    `http://cu943745.tw1.ru/api/admin/promotions/toggle/${id}`,
+    `http://localhost:5000/api/admin/promotions/toggle/${id}`,
     {
       method: 'PATCH',
     }
@@ -99,7 +99,7 @@ export default function AdminPromotionsPage() {
   const deletePromotion = async (id: number) => {
 
     await fetch(
-      `http://cu943745.tw1.ru/api/admin/promotions/${id}`,
+      `http://localhost:5000/api/admin/promotions/${id}`,
       {
         method: 'DELETE',
       }

@@ -60,11 +60,11 @@ export default function MenuPage() {
           await Promise.all([
 
             fetch(
-              'http://cu943745.tw1.ru/api/categories'
+              'http://localhost:5000/api/categories'
             ),
 
             fetch(
-              'http://cu943745.tw1.ru/api/dishes'
+              'http://localhost:5000/api/dishes'
             ),
 
           ]);

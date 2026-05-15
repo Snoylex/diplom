@@ -321,7 +321,7 @@ app.delete('/api/admin/images/:name', async (req, res) => {
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'root',
+  password: 'root123',
   database: 'burekas_menu'
 });
 

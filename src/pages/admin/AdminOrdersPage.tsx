@@ -24,7 +24,7 @@ export default function AdminOrdersPage() {
 ) => {
 
   const res = await fetch(
-    'http://cu943745.tw1.ru/api/admin/orders'
+    'http://localhost:5000/api/admin/orders'
   );
 
   const data = await res.json();
@@ -111,7 +111,7 @@ useEffect(() => {
   ) => {
 
     await fetch(
-      `http://cu943745.tw1.ru/api/admin/orders/${id}/status`,
+      `http://localhost:5000/api/admin/orders/${id}/status`,
       {
         method: 'PATCH',
         headers: {
@@ -140,7 +140,7 @@ useEffect(() => {
     }
 
     await fetch(
-      `http://cu943745.tw1.ru/api/admin/orders/${id}`,
+      `http://localhost:5000/api/admin/orders/${id}`,
       {
         method: 'DELETE',
       }
@@ -277,7 +277,7 @@ useEffect(() => {
                 >
 
                   <img
-                    src={`http://cu943745.tw1.ru/images/dishes/${item.Foto}`}
+                    src={`http://localhost:5000/images/dishes/${item.Foto}`}
                     className="w-24 h-24 object-cover rounded-xl"
                   />
 
