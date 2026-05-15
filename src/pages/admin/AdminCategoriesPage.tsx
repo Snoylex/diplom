@@ -8,7 +8,7 @@ export default function AdminCategoriesPage() {
   
 
   const loadCategories = async () => {
-    const res = await fetch('http://localhost:5000/api/categories');
+    const res = await fetch('/api/api/categories');
     const data = await res.json();
 	
 
@@ -20,7 +20,7 @@ export default function AdminCategoriesPage() {
   }, []);
 
   const addCategory = async () => {
-    await fetch('http://localhost:5000/api/admin/categories', {
+    await fetch('/api/api/admin/categories', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const deleteCategory = async (id: number) => {
   if (!confirmDelete) return;
 
   const res = await fetch(
-    `http://localhost:5000/api/admin/categories/${id}`,
+    `/api/api/admin/categories/${id}`,
     {
       method: 'DELETE',
     }
@@ -60,7 +60,7 @@ const updateCategory = async () => {
   if (!editingCategory) return;
 
   await fetch(
-    `http://localhost:5000/api/admin/categories/${editingCategory.ID}`,
+    `/api/api/admin/categories/${editingCategory.ID}`,
     {
       method: 'PATCH',
       headers: {

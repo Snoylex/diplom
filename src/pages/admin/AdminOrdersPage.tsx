@@ -24,7 +24,7 @@ export default function AdminOrdersPage() {
 ) => {
 
   const res = await fetch(
-    'http://localhost:5000/api/admin/orders'
+    '/api/api/admin/orders'
   );
 
   const data = await res.json();
@@ -111,7 +111,7 @@ useEffect(() => {
   ) => {
 
     await fetch(
-      `http://localhost:5000/api/admin/orders/${id}/status`,
+      `/api/api/admin/orders/${id}/status`,
       {
         method: 'PATCH',
         headers: {
@@ -140,7 +140,7 @@ useEffect(() => {
     }
 
     await fetch(
-      `http://localhost:5000/api/admin/orders/${id}`,
+      `/api/api/admin/orders/${id}`,
       {
         method: 'DELETE',
       }
@@ -277,7 +277,7 @@ useEffect(() => {
                 >
 
                   <img
-                    src={`http://localhost:5000/images/dishes/${item.Foto}`}
+                    src={`/api/images/dishes/${item.Foto}`}
                     className="w-24 h-24 object-cover rounded-xl"
                   />
 

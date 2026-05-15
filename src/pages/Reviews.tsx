@@ -48,12 +48,12 @@ const [selectedImage, setSelectedImage] =
       const url = user
 
         ? `
-          http://localhost:5000
+          /api
           /api/reviews?userId=${user.id}
         `.replace(/\s/g, '')
 
         : `
-          http://localhost:5000
+          /api
           /api/reviews
         `.replace(/\s/g, '');
 
@@ -64,7 +64,7 @@ const [selectedImage, setSelectedImage] =
         await reviewsRes.json();
 
       const ratingRes = await fetch(
-        'http://localhost:5000/api/reviews-rating'
+        '/api/api/reviews-rating'
       );
 
       const rating =
@@ -121,7 +121,7 @@ const [selectedImage, setSelectedImage] =
     );
 
     const res = await fetch(
-      'http://localhost:5000/api/upload-review-photo',
+      '/api/api/upload-review-photo',
       {
         method: 'POST',
         body: formData,
@@ -153,7 +153,7 @@ const [selectedImage, setSelectedImage] =
     if (editingId) {
 
       await fetch(
-        `http://localhost:5000/api/reviews/${editingId}`,
+        `/api/api/reviews/${editingId}`,
         {
           method: 'PUT',
 
@@ -173,7 +173,7 @@ const [selectedImage, setSelectedImage] =
     } else {
 
       await fetch(
-        'http://localhost:5000/api/reviews',
+        '/api/api/reviews',
         {
           method: 'POST',
 
@@ -253,7 +253,7 @@ const [selectedImage, setSelectedImage] =
     ) return;
 
     await fetch(
-      `http://localhost:5000/api/reviews/${id}`,
+      `/api/api/reviews/${id}`,
       {
         method: 'DELETE',
 
@@ -514,7 +514,7 @@ const [selectedImage, setSelectedImage] =
 
   {photo && (
     <img
-      src={`http://localhost:5000/images/reviews/${photo}`}
+      src={`/api/images/reviews/${photo}`}
       className="
         w-full
         max-w-md
@@ -527,7 +527,7 @@ const [selectedImage, setSelectedImage] =
       "
       onClick={() =>
         window.open(
-          `http://localhost:5000/images/reviews/${photo}`,
+          `/api/images/reviews/${photo}`,
           '_blank'
         )
       }
@@ -792,11 +792,11 @@ const [selectedImage, setSelectedImage] =
 			{review.Photo && (
 
 			<img
-				src={`http://localhost:5000/images/reviews/${review.Photo}`}
+				src={`/api/images/reviews/${review.Photo}`}
 
 				onClick={() =>
 				setSelectedImage(
-					`http://localhost:5000/images/reviews/${review.Photo}`
+					`/api/images/reviews/${review.Photo}`
 				)
 				}
 

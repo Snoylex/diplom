@@ -13,7 +13,7 @@ export default function AdminImagesPage() {
 
   const loadImages = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/images');
+      const res = await fetch('/api/api/admin/images');
       const data = await res.json();
       setImages(data);
     } catch (error) {
@@ -29,7 +29,7 @@ export default function AdminImagesPage() {
     if (!confirm(`Удалить ${name}?`)) return;
 
     try {
-      await fetch(`http://localhost:5000/api/admin/images/${name}`, {
+      await fetch(`/api/api/admin/images/${name}`, {
         method: 'DELETE',
       });
       loadImages();

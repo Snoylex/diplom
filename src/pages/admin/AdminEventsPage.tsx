@@ -26,7 +26,7 @@ export default function AdminEventsPage() {
     try {
 
       const res = await fetch(
-        'http://localhost:5000/api/admin/events'
+        '/api/api/admin/events'
       );
 
       const data = await res.json();
@@ -55,7 +55,7 @@ export default function AdminEventsPage() {
       formData.append('image', file);
 
       const res = await fetch(
-        'http://localhost:5000/api/upload-promotion-image',
+        '/api/api/upload-promotion-image',
         {
           method: 'POST',
           body: formData,
@@ -83,8 +83,8 @@ export default function AdminEventsPage() {
     try {
 
       const url = editingId
-        ? `http://localhost:5000/api/admin/events/${editingId}`
-        : 'http://localhost:5000/api/admin/events';
+        ? `/api/api/admin/events/${editingId}`
+        : '/api/api/admin/events';
 
       const method = editingId
         ? 'PUT'
@@ -123,7 +123,7 @@ export default function AdminEventsPage() {
     try {
 
       await fetch(
-        `http://localhost:5000/api/admin/events/${id}`,
+        `/api/api/admin/events/${id}`,
         {
           method: 'DELETE',
         }
@@ -270,7 +270,7 @@ export default function AdminEventsPage() {
           {form.Izobrazhenie && (
 
             <img
-              src={`http://localhost:5000/images/promotions/${form.Izobrazhenie}`}
+              src={`/api/images/promotions/${form.Izobrazhenie}`}
               className="w-52 h-52 object-cover rounded-2xl mx-auto mt-5"
             />
 
@@ -323,7 +323,7 @@ export default function AdminEventsPage() {
           >
 
             <img
-              src={`http://localhost:5000/images/promotions/${event.Izobrazhenie}`}
+              src={`/api/images/promotions/${event.Izobrazhenie}`}
               className="w-full md:w-64 h-64 object-cover rounded-2xl"
             />
 

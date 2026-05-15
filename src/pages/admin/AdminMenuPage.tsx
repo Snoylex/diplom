@@ -17,13 +17,13 @@ export default function AdminMenuPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadData = async () => {
-    const dishesRes = await fetch('http://localhost:5000/api/admin/dishes');
+    const dishesRes = await fetch('/api/api/admin/dishes');
     const dishesData = await dishesRes.json();
 
-    const catRes = await fetch('http://localhost:5000/api/categories');
+    const catRes = await fetch('/api/api/categories');
     const catData = await catRes.json();
 	
-	const imagesRes = await fetch('http://localhost:5000/api/admin/images');
+	const imagesRes = await fetch('/api/api/admin/images');
 	const imagesData = await imagesRes.json();
 
     setDishes(dishesData);
@@ -37,7 +37,7 @@ export default function AdminMenuPage() {
   
   
   const loadImages = async () => {
-  const res = await fetch('http://localhost:5000/api/admin/images');
+  const res = await fetch('/api/api/admin/images');
 
   const data = await res.json();
 
@@ -49,7 +49,7 @@ const uploadImage = async (file: File) => {
 
   formData.append('image', file);
 
-  const res = await fetch('http://localhost:5000/api/admin/upload', {
+  const res = await fetch('/api/api/admin/upload', {
     method: 'POST',
     body: formData,
   });
@@ -92,7 +92,7 @@ const deleteImage = async (name: string) => {
   if (!confirmDelete) return;
 
   await fetch(
-    `http://localhost:5000/api/admin/images/${name}`,
+    `/api/api/admin/images/${name}`,
     {
       method: 'DELETE',
     }
@@ -109,7 +109,7 @@ const deleteImage = async (name: string) => {
 };
 
   const addDish = async () => {
-    await fetch('http://localhost:5000/api/admin/dishes', {
+    await fetch('/api/api/admin/dishes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ const deleteImage = async (name: string) => {
   const addCategory = async () => {
     if (!newCategory.trim()) return;
 
-    await fetch('http://localhost:5000/api/admin/categories', {
+    await fetch('/api/api/admin/categories', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ const deleteImage = async (name: string) => {
   if (!confirmDelete) return;
 
   const res = await fetch(
-    `http://localhost:5000/api/admin/dishes/${id}`,
+    `/api/api/admin/dishes/${id}`,
     {
       method: 'DELETE',
     }
@@ -171,7 +171,7 @@ const deleteImage = async (name: string) => {
 };
 
   const toggleDish = async (id: number) => {
-    await fetch(`http://localhost:5000/api/admin/dishes/toggle/${id}`, {
+    await fetch(`/api/api/admin/dishes/toggle/${id}`, {
       method: 'PATCH',
     });
     loadData();

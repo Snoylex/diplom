@@ -13,7 +13,7 @@ export default function AdminArchiveOrdersPage() {
   const loadOrders = async () => {
 
     const res = await fetch(
-      'http://localhost:5000/api/admin/ordersarchive'
+      '/api/api/admin/ordersarchive'
     );
 
     const data = await res.json();
@@ -30,7 +30,7 @@ export default function AdminArchiveOrdersPage() {
   const loadSettings = async () => {
 
     const res = await fetch(
-      'http://localhost:5000/api/admin/archive-settings'
+      '/api/api/admin/archive-settings'
     );
 
     const data = await res.json();
@@ -52,7 +52,7 @@ export default function AdminArchiveOrdersPage() {
   const saveDays = async () => {
 
     await fetch(
-      'http://localhost:5000/api/admin/archive-settings',
+      '/api/api/admin/archive-settings',
       {
         method: 'POST',
 
@@ -83,7 +83,7 @@ export default function AdminArchiveOrdersPage() {
     ) return;
 
     await fetch(
-      `http://localhost:5000/api/admin/orders/${id}`,
+      `/api/api/admin/orders/${id}`,
       {
         method: 'DELETE',
       }
@@ -258,7 +258,7 @@ export default function AdminArchiveOrdersPage() {
                   >
 
                     <img
-                      src={`http://localhost:5000/images/dishes/${item.Foto}`}
+                      src={`/api/images/dishes/${item.Foto}`}
                       className="
                         w-24
                         h-24

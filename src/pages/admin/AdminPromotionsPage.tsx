@@ -18,19 +18,19 @@ export default function AdminPromotionsPage() {
   const loadData = async () => {
 
     const promoRes = await fetch(
-      'http://localhost:5000/api/admin/promotions'
+      '/api/api/admin/promotions'
     );
 
     const promoData = await promoRes.json();
 
     const dishRes = await fetch(
-      'http://localhost:5000/api/admin/dishes'
+      '/api/api/admin/dishes'
     );
 
     const dishData = await dishRes.json();
 
     const catRes = await fetch(
-      'http://localhost:5000/api/categories'
+      '/api/api/categories'
     );
 
     const catData = await catRes.json();
@@ -47,7 +47,7 @@ export default function AdminPromotionsPage() {
   const createPromotion = async () => {
 
     await fetch(
-      'http://localhost:5000/api/admin/promotions',
+      '/api/api/admin/promotions',
       {
         method: 'POST',
         headers: {
@@ -87,7 +87,7 @@ export default function AdminPromotionsPage() {
   const togglePromotion = async (id: number) => {
 
   await fetch(
-    `http://localhost:5000/api/admin/promotions/toggle/${id}`,
+    `/api/api/admin/promotions/toggle/${id}`,
     {
       method: 'PATCH',
     }
@@ -99,7 +99,7 @@ export default function AdminPromotionsPage() {
   const deletePromotion = async (id: number) => {
 
     await fetch(
-      `http://localhost:5000/api/admin/promotions/${id}`,
+      `/api/api/admin/promotions/${id}`,
       {
         method: 'DELETE',
       }

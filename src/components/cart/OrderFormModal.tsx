@@ -24,7 +24,7 @@ export default function OrderFormModal({ isOpen, onClose }: Props) {
     }
 
     try {
-      const response = await fetch('http://10.22.106.105:5000/api/orders', {
+      const response = await fetch('/api/api/orders', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
