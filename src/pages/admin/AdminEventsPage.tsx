@@ -26,7 +26,7 @@ export default function AdminEventsPage() {
     try {
 
       const res = await fetch(
-        '/api/api/admin/events'
+        '/api/admin/events'
       );
 
       const data = await res.json();
@@ -55,7 +55,7 @@ export default function AdminEventsPage() {
       formData.append('image', file);
 
       const res = await fetch(
-        '/api/api/upload-promotion-image',
+        '/api/upload-promotion-image',
         {
           method: 'POST',
           body: formData,
@@ -83,8 +83,8 @@ export default function AdminEventsPage() {
     try {
 
       const url = editingId
-        ? `/api/api/admin/events/${editingId}`
-        : '/api/api/admin/events';
+        ? `/api/admin/events/${editingId}`
+        : '/api/admin/events';
 
       const method = editingId
         ? 'PUT'
@@ -123,7 +123,7 @@ export default function AdminEventsPage() {
     try {
 
       await fetch(
-        `/api/api/admin/events/${id}`,
+        `/api/admin/events/${id}`,
         {
           method: 'DELETE',
         }

@@ -6,7 +6,7 @@ export default function DiscountsPage() {
   const [promotions, setPromotions] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/api/admin/promotions')
+    fetch('/api/admin/promotions')
       .then((res) => res.json())
       .then((data) => {
         const active = data.filter(

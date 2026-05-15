@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
 
   const sendCode = async () => {
     const res = await fetch(
-      '/api/api/password/send-code',
+      '/api/password/send-code',
       {
         method: 'POST',
         headers: {
@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
 
   const resetPassword = async () => {
     const res = await fetch(
-      '/api/api/password/reset',
+      '/api/password/reset',
       {
         method: 'POST',
         headers: {

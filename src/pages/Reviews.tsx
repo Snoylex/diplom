@@ -48,12 +48,10 @@ const [selectedImage, setSelectedImage] =
       const url = user
 
         ? `
-          /api
           /api/reviews?userId=${user.id}
         `.replace(/\s/g, '')
 
         : `
-          /api
           /api/reviews
         `.replace(/\s/g, '');
 
@@ -64,7 +62,7 @@ const [selectedImage, setSelectedImage] =
         await reviewsRes.json();
 
       const ratingRes = await fetch(
-        '/api/api/reviews-rating'
+        '/api/reviews-rating'
       );
 
       const rating =
@@ -121,7 +119,7 @@ const [selectedImage, setSelectedImage] =
     );
 
     const res = await fetch(
-      '/api/api/upload-review-photo',
+      '/api/upload-review-photo',
       {
         method: 'POST',
         body: formData,
@@ -153,7 +151,7 @@ const [selectedImage, setSelectedImage] =
     if (editingId) {
 
       await fetch(
-        `/api/api/reviews/${editingId}`,
+        `/api/reviews/${editingId}`,
         {
           method: 'PUT',
 
@@ -173,7 +171,7 @@ const [selectedImage, setSelectedImage] =
     } else {
 
       await fetch(
-        '/api/api/reviews',
+        '/api/reviews',
         {
           method: 'POST',
 
@@ -253,7 +251,7 @@ const [selectedImage, setSelectedImage] =
     ) return;
 
     await fetch(
-      `/api/api/reviews/${id}`,
+      `/api/reviews/${id}`,
       {
         method: 'DELETE',
 
@@ -514,7 +512,7 @@ const [selectedImage, setSelectedImage] =
 
   {photo && (
     <img
-      src={`/api/images/reviews/${photo}`}
+      src={`/images/reviews/${photo}`}
       className="
         w-full
         max-w-md
@@ -527,7 +525,7 @@ const [selectedImage, setSelectedImage] =
       "
       onClick={() =>
         window.open(
-          `/api/images/reviews/${photo}`,
+          `/images/reviews/${photo}`,
           '_blank'
         )
       }
@@ -792,11 +790,11 @@ const [selectedImage, setSelectedImage] =
 			{review.Photo && (
 
 			<img
-				src={`/api/images/reviews/${review.Photo}`}
+				src={`/images/reviews/${review.Photo}`}
 
 				onClick={() =>
 				setSelectedImage(
-					`/api/images/reviews/${review.Photo}`
+					`/images/reviews/${review.Photo}`
 				)
 				}
 

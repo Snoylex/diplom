@@ -71,11 +71,11 @@ export default function ProfilePage() {
           await Promise.all([
 
             fetch(
-              `/api/api/profile/${user.id}`
+              `/api/profile/${user.id}`
             ),
 
             fetch(
-              `/api/api/my-orders/${user.id}`
+              `/api/my-orders/${user.id}`
             ),
 
           ]);
@@ -144,7 +144,7 @@ export default function ProfilePage() {
 
       const res = await fetch(
 
-        `/api/api/profile/${user.id}`,
+        `/api/profile/${user.id}`,
 
         {
           method: 'PATCH',
@@ -875,7 +875,7 @@ export default function ProfilePage() {
 
                           {/* IMAGE */}
                           <img
-                            src={`/api/images/dishes/${item.Foto}`}
+                            src={`/images/dishes/${item.Foto}`}
                             alt={
                               item.Name_blyuda
                             }

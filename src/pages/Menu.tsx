@@ -60,11 +60,11 @@ export default function MenuPage() {
           await Promise.all([
 
             fetch(
-              '/api/api/categories'
+              '/api/categories'
             ),
 
             fetch(
-              '/api/api/dishes'
+              '/api/dishes'
             ),
 
           ]);

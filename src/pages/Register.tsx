@@ -54,7 +54,7 @@ export default function Register() {
 
       const response = await fetch(
 
-        '/api/api/register',
+        '/api/register',
 
         {
           method: 'POST',
