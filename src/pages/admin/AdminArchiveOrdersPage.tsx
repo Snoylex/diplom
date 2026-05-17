@@ -94,19 +94,19 @@ export default function AdminArchiveOrdersPage() {
 
   return (
 
-    <div className="p-8">
+    <div className="p-4 md:p-8">
 
       {/* HEADER */}
 
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 md:mb-10 gap-4">
 
         <div>
 
-          <h1 className="text-4xl font-bold">
+          <h1 className="text-3xl md:text-4xl font-bold">
             Архив заказов
           </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-gray-500 mt-2 text-sm md:text-base">
             Архивные и завершённые заказы
           </p>
 
@@ -116,13 +116,13 @@ export default function AdminArchiveOrdersPage() {
 
       {/* НАСТРОЙКА */}
 
-      <div className="bg-white rounded-3xl shadow p-6 mb-10">
+      <div className="bg-white rounded-2xl md:rounded-3xl shadow p-4 md:p-6 mb-8 md:mb-10">
 
-        <h2 className="text-2xl font-bold mb-5">
+        <h2 className="text-xl md:text-2xl font-bold mb-5">
           Автоудаление архива
         </h2>
 
-        <div className="flex items-center gap-5">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-5">
 
           <input
             type="number"
@@ -131,10 +131,16 @@ export default function AdminArchiveOrdersPage() {
             onChange={(e) =>
               setDays(Number(e.target.value))
             }
-            className="border rounded-xl p-3 w-40"
+            className="
+              border
+              rounded-xl
+              p-3
+              w-full
+              sm:w-40
+            "
           />
 
-          <span className="text-lg">
+          <span className="text-base md:text-lg">
             дней
           </span>
 
@@ -147,6 +153,8 @@ export default function AdminArchiveOrdersPage() {
               py-3
               rounded-xl
               hover:bg-orange-600
+              w-full
+              sm:w-auto
             "
           >
             Сохранить
@@ -166,30 +174,32 @@ export default function AdminArchiveOrdersPage() {
             key={order.ID}
             className="
               bg-white
-              rounded-3xl
+              rounded-2xl
+              md:rounded-3xl
               shadow
-              p-6
+              p-4
+              md:p-6
             "
           >
 
             {/* TOP */}
 
-            <div className="flex justify-between">
+            <div className="flex flex-col lg:flex-row lg:justify-between gap-5">
 
               <div>
 
-                <h2 className="text-2xl font-bold">
+                <h2 className="text-xl md:text-2xl font-bold">
                   Заказ #{order.ID}
                 </h2>
 
-                <p className="text-gray-500 mt-1">
+                <p className="text-gray-500 mt-1 text-sm md:text-base">
                   {new Date(order.Data)
                     .toLocaleString()}
                 </p>
 
               </div>
 
-              <div className="text-right">
+              <div className="lg:text-right">
 
                 <div
                   className="
@@ -198,12 +208,14 @@ export default function AdminArchiveOrdersPage() {
                     py-2
                     rounded-xl
                     inline-block
+                    text-sm
+                    md:text-base
                   "
                 >
                   {order.Status}
                 </div>
 
-                <h3 className="text-3xl font-bold mt-4">
+                <h3 className="text-2xl md:text-3xl font-bold mt-4">
                   {order.Summa_zakaza} ₽
                 </h3>
 
@@ -215,21 +227,25 @@ export default function AdminArchiveOrdersPage() {
 
             <div className="mt-6">
 
-              <h3 className="font-bold text-lg">
+              <h3 className="font-bold text-base md:text-lg">
                 Клиент
               </h3>
 
-              <p className="mt-2">
-                {order.FIO || 'Не указано'}
-              </p>
+              <div className="mt-2 space-y-1 text-sm md:text-base break-words">
 
-              <p>
-                {order.Phone || 'Нет телефона'}
-              </p>
+                <p>
+                  {order.FIO || 'Не указано'}
+                </p>
 
-              <p>
-                {order.Adres || 'Нет адреса'}
-              </p>
+                <p>
+                  {order.Phone || 'Нет телефона'}
+                </p>
+
+                <p>
+                  {order.Adres || 'Нет адреса'}
+                </p>
+
+              </div>
 
             </div>
 
@@ -237,7 +253,7 @@ export default function AdminArchiveOrdersPage() {
 
             <div className="mt-8">
 
-              <h3 className="font-bold text-lg mb-4">
+              <h3 className="font-bold text-base md:text-lg mb-4">
                 Позиции заказа
               </h3>
 
@@ -249,7 +265,9 @@ export default function AdminArchiveOrdersPage() {
                     key={item.ID}
                     className="
                       flex
-                      items-center
+                      flex-col
+                      sm:flex-row
+                      sm:items-center
                       gap-4
                       border
                       rounded-2xl
@@ -260,8 +278,10 @@ export default function AdminArchiveOrdersPage() {
                     <img
                       src={`/images/dishes/${item.Foto}`}
                       className="
-                        w-24
-                        h-24
+                        w-full
+                        sm:w-24
+                        h-48
+                        sm:h-24
                         object-cover
                         rounded-2xl
                       "
@@ -269,17 +289,17 @@ export default function AdminArchiveOrdersPage() {
 
                     <div className="flex-1">
 
-                      <h4 className="font-bold text-lg">
+                      <h4 className="font-bold text-base md:text-lg">
                         {item.Name_blyuda}
                       </h4>
 
-                      <p className="text-gray-500 mt-1">
+                      <p className="text-gray-500 mt-1 text-sm md:text-base">
                         {item.Kolichestvo} × {item.Price} ₽
                       </p>
 
                     </div>
 
-                    <div className="text-2xl font-bold">
+                    <div className="text-xl md:text-2xl font-bold sm:text-right">
 
                       {item.Summa} ₽
 
@@ -295,7 +315,7 @@ export default function AdminArchiveOrdersPage() {
 
             {/* ACTIONS */}
 
-            <div className="flex justify-end mt-8">
+            <div className="flex justify-stretch md:justify-end mt-8">
 
               <button
                 onClick={() =>
@@ -308,6 +328,8 @@ export default function AdminArchiveOrdersPage() {
                   px-6
                   py-3
                   rounded-xl
+                  w-full
+                  md:w-auto
                 "
               >
                 Удалить навсегда

@@ -1,317 +1,318 @@
-import { useEffect, useState } from 'react';
-import { useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export default function AdminMenuPage() {
-  const [dishes, setDishes] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState('');
+  const [dishes, setDishes] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
-  const [form, setForm] = useState({
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState('');
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const emptyForm = {
     name: '',
     description: '',
     price: '',
     categoryId: '',
     foto: '',
-  });
-  const [images, setImages] = useState<string[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  };
+
+  const [form, setForm] = useState(emptyForm);
 
   const loadData = async () => {
-    const dishesRes = await fetch('/api/admin/dishes');
-    const dishesData = await dishesRes.json();
+    const [dishesRes, catRes] = await Promise.all([
+      fetch('/api/admin/dishes'),
+      fetch('/api/categories'),
+    ]);
 
-    const catRes = await fetch('/api/categories');
-    const catData = await catRes.json();
-	
-	const imagesRes = await fetch('/api/admin/images');
-	const imagesData = await imagesRes.json();
-
-    setDishes(dishesData);
-    setCategories(catData);
-	setImages(imagesData);
+    setDishes(await dishesRes.json());
+    setCategories(await catRes.json());
   };
 
   useEffect(() => {
     loadData();
   }, []);
-  
-  
-  const loadImages = async () => {
-  const res = await fetch('/api/admin/images');
 
-  const data = await res.json();
+  const uploadImage = async (file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
 
-  setImages(data);
-};
-
-const uploadImage = async (file: File) => {
-  const formData = new FormData();
-
-  formData.append('image', file);
-
-  const res = await fetch('/api/admin/upload', {
-    method: 'POST',
-    body: formData,
-  });
-
-  const data = await res.json();
-
-  setForm({
-    ...form,
-    foto: data.filename,
-  });
-
-  loadImages();
-};
-
-const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-  e.preventDefault();
-
-  const file = e.dataTransfer.files[0];
-
-  if (!file) return;
-
-  await uploadImage(file);
-};
-
-const handleFileChange = async (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-  const file = e.target.files?.[0];
-
-  if (!file) return;
-
-  await uploadImage(file);
-};
-
-const deleteImage = async (name: string) => {
-  const confirmDelete = window.confirm(
-    'Удалить изображение?'
-  );
-
-  if (!confirmDelete) return;
-
-  await fetch(
-    `/api/admin/images/${name}`,
-    {
-      method: 'DELETE',
-    }
-  );
-
-  if (form.foto === name) {
-    setForm({
-      ...form,
-      foto: '',
-    });
-  }
-
-  loadImages();
-};
-
-  const addDish = async () => {
-    await fetch('/api/admin/dishes', {
+    const res = await fetch('/api/admin/upload', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    setForm((prev) => ({
+      ...prev,
+      foto: data.filename,
+    }));
+  };
+
+  const resetForm = () => {
+    setForm(emptyForm);
+    setEditingId(null);
+    setError('');
+  };
+
+  const saveDish = async () => {
+    setError('');
+
+    if (!form.name.trim()) return setError('Введите название');
+    if (!form.price || isNaN(Number(form.price)))
+      return setError('Введите корректную цену');
+    if (!form.categoryId) return setError('Выберите категорию');
+
+    const url = editingId
+      ? `/api/admin/dishes/${editingId}`
+      : '/api/admin/dishes';
+
+    const method = editingId ? 'PUT' : 'POST';
+
+    await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     });
 
-    // Сброс формы
+    resetForm();
+    loadData();
+  };
+
+  const editDish = (dish: any) => {
     setForm({
-      name: '',
-      description: '',
-      price: '',
-      categoryId: '',
-      foto: '',
+      name: dish.Name_blyuda,
+      description: dish.Opisanie,
+      price: dish.Price,
+      categoryId: dish.ID_kategorii,
+      foto: dish.Foto,
     });
 
-    loadData();
+    setEditingId(dish.ID);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const addCategory = async () => {
-    if (!newCategory.trim()) return;
-
-    await fetch('/api/admin/categories', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name: newCategory }),
-    });
-
-    setNewCategory('');
-    loadData();
-  };
-
-
-  
-  const deleteDish = async (id: number) => {
-  const confirmDelete = window.confirm(
-    'Удалить позицию?'
-  );
-
-  if (!confirmDelete) return;
-
-  const res = await fetch(
-    `/api/admin/dishes/${id}`,
-    {
-      method: 'DELETE',
-    }
-  );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert(data.error);
-    return;
-  }
-
-  loadData();
-};
 
   const toggleDish = async (id: number) => {
-    await fetch(`/api/admin/dishes/toggle/${id}`, {
-      method: 'PATCH',
-    });
+    await fetch(`/api/admin/dishes/toggle/${id}`, { method: 'PATCH' });
     loadData();
   };
 
+  const filteredDishes = dishes.filter((dish) =>
+    dish.Name_blyuda?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="p-6">
-      <h1 className="text-4xl font-bold mb-10">Управление меню</h1>
+    <div className="p-3 md:p-0 max-w-6xl mx-auto">
 
-      {/* Форма добавления блюда */}
-      <div className="bg-white rounded-2xl p-6 shadow mb-10">
-        <h2 className="text-2xl font-bold mb-6">Добавить блюдо</h2>
+      {/* TITLE */}
+      <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-10">
+        Управление меню
+      </h1>
 
-        <div className="grid grid-cols-2 gap-4">
+      {/* SEARCH */}
+      <input
+        className="border p-3 rounded-xl w-full mb-4 md:mb-8 text-sm md:text-base"
+        placeholder="Поиск блюда..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {/* FORM */}
+      <div className="bg-white rounded-2xl shadow p-3 md:p-6 mb-6 md:mb-10">
+
+        <h2 className="text-lg md:text-2xl font-bold mb-4 md:mb-5">
+          {editingId ? 'Редактирование блюда' : 'Добавить блюдо'}
+        </h2>
+
+        {error && (
+          <div className="mb-3 bg-red-100 text-red-600 p-2 rounded-xl text-sm">
+            {error}
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+
           <input
             placeholder="Название"
-            className="border p-3 rounded-xl"
+            className="border p-3 rounded-xl text-sm md:text-base"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
           />
 
           <input
-            placeholder="Цена"
             type="number"
-            className="border p-3 rounded-xl"
+            placeholder="Цена"
+            className="border p-3 rounded-xl text-sm md:text-base"
             value={form.price}
-            onChange={(e) => setForm({ ...form, price: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, price: e.target.value })
+            }
           />
-
-          <textarea
-            placeholder="Описание"
-            className="border p-3 rounded-xl col-span-2"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-          />
-
 
           <select
-            className="border p-3 rounded-xl col-span-2"
+            className="border p-3 rounded-xl md:col-span-2"
             value={form.categoryId}
-            onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, categoryId: e.target.value })
+            }
           >
-            <option value="">Выберите категорию</option>
-            {categories.map((cat: any) => (
-              <option key={cat.ID} value={cat.ID}>
-                {cat.nazvanie_kategorii}
+            <option value="">Категория</option>
+            {categories.map((c: any) => (
+              <option key={c.ID} value={c.ID}>
+                {c.nazvanie_kategorii}
               </option>
             ))}
           </select>
+
+          <textarea
+            placeholder="Описание"
+            className="border p-3 rounded-xl md:col-span-2 h-24 md:h-40"
+            value={form.description}
+            onChange={(e) =>
+              setForm({ ...form, description: e.target.value })
+            }
+          />
         </div>
 
-<div
-  onDrop={handleDrop}
-  onDragOver={(e) => e.preventDefault()}
-  className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center mt-6"
->
-  <p className="text-lg mb-4">
-    Перетащите фото сюда
-  </p>
+        {/* UPLOAD */}
+        <div className="border-2 border-dashed rounded-2xl p-4 md:p-8 text-center mt-4 md:mt-5">
 
-  <button
-    type="button"
-    onClick={() => fileInputRef.current?.click()}
-    className="bg-gray-200 px-5 py-2 rounded-xl"
-  >
-    Выбрать файл
-  </button>
+          <input
+            type="file"
+            hidden
+            ref={fileInputRef}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) uploadImage(file);
+            }}
+          />
 
-  <input
-    type="file"
-    hidden
-    ref={fileInputRef}
-    onChange={handleFileChange}
-  />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="bg-gray-200 px-4 py-2 rounded-xl w-full md:w-auto"
+          >
+            Загрузить фото
+          </button>
 
-  {form.foto && (
-    <div className="mt-5">
-      <img
-        src={`/images/dishes/${form.foto}`}
-        className="w-40 h-40 object-cover rounded-xl mx-auto"
-      />
+          <img
+            src={
+              form.foto
+                ? `/images/dishes/${form.foto}`
+                : `/images/dishes/default.jpg`
+            }
+            className="w-32 h-32 object-cover mt-4 mx-auto rounded-xl"
+          />
+        </div>
 
-      <p className="mt-2 text-sm">
-        {form.foto}
-      </p>
-    </div>
-  )}
-</div>
+        {/* BUTTONS */}
+        <div className="flex flex-col md:flex-row gap-2 md:gap-3 mt-5 md:mt-6">
 
+          <button
+            onClick={saveDish}
+            className="bg-orange-500 text-white px-4 py-3 rounded-xl w-full md:w-auto"
+          >
+            {editingId ? 'Сохранить' : 'Добавить'}
+          </button>
 
+          {editingId && (
+            <button
+              onClick={resetForm}
+              className="bg-gray-200 px-4 py-3 rounded-xl w-full md:w-auto"
+            >
+              Отмена
+            </button>
+          )}
 
-        <button
-          onClick={addDish}
-          className="mt-6 bg-orange-500 text-white px-6 py-3 rounded-xl hover:bg-orange-600 transition"
-        >
-          Добавить блюдо
-        </button>
+        </div>
       </div>
 
-   
+      {/* LIST */}
+      <div className="grid gap-4 md:gap-5">
 
-      {/* Список блюд */}
-      <div className="grid gap-5">
-        {dishes.map((dish: any) => (
+        {filteredDishes.map((dish: any) => (
           <div
             key={dish.ID}
-            className="bg-white rounded-2xl shadow p-5 flex gap-5 items-center"
+            className="
+              bg-white rounded-2xl shadow p-3 md:p-5
+              flex flex-col md:flex-row gap-4 md:gap-5
+            "
           >
+
+            {/* IMAGE */}
             <img
-              src={`/images/dishes/${dish.Foto}`}
-              alt={dish.Name_blyuda}
-              className="w-28 h-28 object-cover rounded-xl"
+              src={
+                dish.Foto
+                  ? `/images/dishes/${dish.Foto}`
+                  : `/images/dishes/default.jpg`
+              }
+              className="
+                w-full md:w-64 h-40 md:h-64
+                object-cover rounded-2xl
+              "
             />
 
+            {/* INFO */}
             <div className="flex-1">
-              <h3 className="text-2xl font-bold">{dish.Name_blyuda}</h3>
-              <p className="text-gray-600 mt-1">{dish.Opisanie}</p>
-              <p className="mt-2">Категория: {dish.nazvanie_kategorii}</p>
-              <p className="font-bold mt-2 text-lg">{dish.Price} ₽</p>
+
+              <h3 className="text-xl md:text-3xl font-bold">
+                {dish.Name_blyuda}
+              </h3>
+
+              <p className="text-gray-600 mt-2 text-sm md:text-base">
+                {dish.Opisanie}
+              </p>
+
+              <p className="font-bold mt-3 text-lg">
+                {dish.Price} ₽
+              </p>
+
+              <p className="text-sm text-gray-500 mt-1">
+                {dish.nazvanie_kategorii}
+              </p>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition">
-                Редактировать
+            {/* ACTIONS */}
+            <div className="
+              flex flex-col gap-2
+              w-full md:w-auto
+            ">
+
+              <button
+                onClick={() => editDish(dish)}
+                className="bg-blue-500 text-white rounded-xl w-full px-3 py-2"
+              >
+                Изменить
               </button>
 
               <button
                 onClick={() => toggleDish(dish.ID)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded-xl hover:bg-yellow-600 transition"
+                className="bg-yellow-500 text-white rounded-xl w-full px-3 py-2"
               >
                 {dish.aktiv ? 'Скрыть' : 'Показать'}
               </button>
 
               <button
-                onClick={() => deleteDish(dish.ID)}
-                className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition"
+                onClick={async () => {
+                  const ok = window.confirm('Удалить блюдо?');
+                  if (!ok) return;
+
+                  await fetch(`/api/admin/dishes/${dish.ID}`, {
+                    method: 'DELETE',
+                  });
+
+                  loadData();
+                }}
+                className="bg-red-500 text-white rounded-xl w-full px-3 py-2"
               >
                 Удалить
               </button>
+
             </div>
+
           </div>
         ))}
       </div>

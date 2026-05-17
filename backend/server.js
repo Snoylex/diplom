@@ -33,7 +33,7 @@ app.use(
   )
 );
 
-// Раздача фото отзывов (на всякий случай)
+// Раздача фото отзывов
 app.use(
   '/images/reviews',
   express.static(
@@ -276,13 +276,37 @@ app.post('/api/admin/upload', upload.single('image'), (req, res) => {
   }
 });
 
+
+
+function getAllFiles(dir, baseDir = dir) {
+  let results = [];
+
+  const files = fs.readdirSync(dir);
+
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+
+    const stat = fs.statSync(filePath);
+
+    if (stat.isDirectory()) {
+      results = results.concat(getAllFiles(filePath, baseDir));
+    } else {
+      // относительный путь
+      results.push(path.relative(baseDir, filePath).replace(/\\/g, '/'));
+    }
+  }
+
+  return results;
+}
+
 app.get('/api/admin/images', async (req, res) => {
   try {
-    const dir = path.join(__dirname, '../public/images/dishes');
+    const dir = path.join(__dirname, '../public/images');
 
-    const files = fs.readdirSync(dir);
+    const files = getAllFiles(dir);
 
     res.json(files);
+
   } catch (err) {
     console.error(err);
 
@@ -292,21 +316,42 @@ app.get('/api/admin/images', async (req, res) => {
   }
 });
 
-app.delete('/api/admin/images/:name', async (req, res) => {
+app.delete(/^\/api\/admin\/images\/(.+)/, async (req, res) => {
   try {
-    const filePath = path.join(
+
+    const relativePath =
+      decodeURIComponent(req.params[0]);
+
+    const baseDir = path.join(
       __dirname,
-      '../public/images/dishes',
-      req.params.name
+      '../public/images'
     );
 
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    const filePath = path.normalize(
+      path.join(baseDir, relativePath)
+    );
+
+    // защита
+    if (!filePath.startsWith(baseDir)) {
+      return res.status(400).json({
+        error: 'Некорректный путь',
+      });
     }
 
-    res.json({ success: true });
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        error: 'Файл не найден',
+      });
+    }
+
+    fs.unlinkSync(filePath);
+
+    res.json({
+      success: true,
+    });
 
   } catch (err) {
+
     console.error(err);
 
     res.status(500).json({
@@ -314,7 +359,6 @@ app.delete('/api/admin/images/:name', async (req, res) => {
     });
   }
 });
-
 
 
 // подключение к БД
@@ -626,6 +670,8 @@ app.post('/api/orders', async (req, res) => {
     const totalSum = validItems.reduce((sum, item) => {
       return sum + (item.price || 0) * (item.quantity || 1);
     }, 0);
+	const totalSumFormatted = Number(totalSum.toFixed(2));
+
 
     // создаём заказ
     const [orderResult] = await db.promise().execute(
@@ -665,64 +711,141 @@ app.post('/api/orders', async (req, res) => {
   }
 });
 
+
 app.get('/api/admin/dishes', async (req, res) => {
   try {
     const [rows] = await db.promise().execute(`
-  SELECT 
-    m.ID,
-    m.Name_blyuda,
-    m.Opisanie,
-    m.Price,
-    m.Foto,
-    m.aktiv,
-    m.ID_kategorii,
-    k.nazvanie_kategorii
-  FROM menu m
-  LEFT JOIN kategorii k ON m.ID_kategorii = k.ID
-  ORDER BY m.ID DESC
-`);
+      SELECT 
+        m.ID,
+        m.Name_blyuda,
+        m.Opisanie,
+        m.Price,
+        m.Foto,
+        m.aktiv,
+        m.ID_kategorii,
+        k.nazvanie_kategorii
+      FROM menu m
+      LEFT JOIN kategorii k ON m.ID_kategorii = k.ID
+      ORDER BY m.ID DESC
+    `);
 
     res.json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Ошибка сервера' });
+    res.status(500).json({ error: 'Ошибка загрузки блюд' });
   }
 });
 
- app.post('/api/admin/dishes', async (req, res) => {
-  const { name, description, price, categoryId, Foto } = req.body;
 
+// =======================
+// CREATE DISH
+// =======================
+app.post('/api/admin/dishes', async (req, res) => {
   try {
+    let {
+      name,
+      description,
+      price,
+      categoryId,
+      foto,
+    } = req.body;
+
+    // защита от undefined
+    name = name || null;
+    description = description || null;
+    price = price ? Number(price) : null;
+    categoryId = categoryId ? Number(categoryId) : null;
+    foto = foto || null;
+
     await db.promise().execute(
       `
       INSERT INTO menu
       (Name_blyuda, Opisanie, Price, ID_kategorii, Foto, aktiv)
       VALUES (?, ?, ?, ?, ?, 1)
       `,
-      [name, description, price, categoryId, Foto]
+      [name, description, price, categoryId, foto]
     );
 
     res.json({ success: true });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Ошибка добавления' });
+    res.status(500).json({ error: 'Ошибка добавления блюда' });
   }
 });
 
+
+// =======================
+// UPDATE DISH
+// =======================
+app.put('/api/admin/dishes/:id', async (req, res) => {
+  try {
+    let {
+      name,
+      description,
+      price,
+      categoryId,
+      foto,
+    } = req.body;
+
+    name = name || null;
+    description = description || null;
+    price = price ? Number(price) : null;
+    categoryId = categoryId ? Number(categoryId) : null;
+    foto = foto || null;
+
+    await db.promise().execute(
+      `
+      UPDATE menu
+      SET
+        Name_blyuda = ?,
+        Opisanie = ?,
+        Price = ?,
+        ID_kategorii = ?,
+        Foto = ?
+      WHERE ID = ?
+      `,
+      [
+        name,
+        description,
+        price,
+        categoryId,
+        foto,
+        req.params.id
+      ]
+    );
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка обновления блюда' });
+  }
+});
+
+
+// =======================
+// DELETE DISH
+// =======================
 app.delete('/api/admin/dishes/:id', async (req, res) => {
   try {
     await db.promise().execute(
-      'DELETE FROM menu WHERE ID = ?',
+      `DELETE FROM menu WHERE ID = ?`,
       [req.params.id]
     );
 
     res.json({ success: true });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Ошибка удаления' });
+    res.status(500).json({ error: 'Ошибка удаления блюда' });
   }
 });
 
+
+// =======================
+// TOGGLE ACTIVE
+// =======================
 app.patch('/api/admin/dishes/toggle/:id', async (req, res) => {
   try {
     await db.promise().execute(`
@@ -732,12 +855,12 @@ app.patch('/api/admin/dishes/toggle/:id', async (req, res) => {
     `, [req.params.id]);
 
     res.json({ success: true });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Ошибка обновления' });
+    res.status(500).json({ error: 'Ошибка переключения статуса' });
   }
 });
-
 app.post('/api/admin/categories', async (req, res) => {
   const { name } = req.body;
 
@@ -951,9 +1074,11 @@ app.get('/api/events', async (req, res) => {
   try {
 
     const [rows] = await db.promise().execute(`
-      SELECT *
-      FROM events
-      ORDER BY Data_nachala DESC
+      SELECT * 
+	FROM events 
+	WHERE Data_okonchaniya > CURRENT_DATE 
+	ORDER BY Data_nachala DESC
+
     `);
 
     res.json(rows);
@@ -1242,6 +1367,42 @@ app.delete('/api/admin/events/:id', async (req, res) => {
     });
   }
 
+});
+
+app.put('/api/admin/events/:id', async (req, res) => {
+  const {
+    event_name,
+    Opisanie,
+    Izobrazhenie,
+    Data_nachala,
+    Data_okonchaniya,
+  } = req.body;
+
+  try {
+    await db.promise().execute(`
+      UPDATE events
+      SET
+        event_name = ?,
+        Opisanie = ?,
+        Izobrazhenie = ?,
+        Data_nachala = ?,
+        Data_okonchaniya = ?
+      WHERE ID = ?
+    `, [
+      event_name,
+      Opisanie,
+      Izobrazhenie,
+      Data_nachala,
+      Data_okonchaniya,
+      req.params.id,
+    ]);
+
+    res.json({ success: true });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Ошибка обновления мероприятия' });
+  }
 });
 
 // =====================================
@@ -1689,6 +1850,65 @@ app.get('/api/my-orders/:userId', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'Ошибка загрузки заказов' });
   }
+});
+
+// =======================
+// УДАЛЕНИЕ ПРОФИЛЯ
+// =======================
+
+app.delete('/api/profile/:id', async (req, res) => {
+
+  const userId = req.params.id;
+
+  try {
+
+    // удаляем позиции заказов
+    await db.promise().execute(`
+      DELETE pvz
+      FROM poziciya_v_zakaze pvz
+      INNER JOIN zakaz z
+      ON pvz.ID_zakaza = z.ID
+      WHERE z.personal_id = ?
+    `, [userId]);
+
+    // удаляем заказы
+    await db.promise().execute(`
+      DELETE FROM zakaz
+      WHERE personal_id = ?
+    `, [userId]);
+
+    // удаляем отзывы
+    await db.promise().execute(`
+      DELETE FROM otzyvy
+      WHERE id_user = ?
+    `, [userId]);
+
+    // удаляем personal_info
+    await db.promise().execute(`
+      DELETE FROM personal_info
+      WHERE id_user = ?
+    `, [userId]);
+
+    // удаляем аккаунт
+    await db.promise().execute(`
+      DELETE FROM avtorizaciya
+      WHERE ID = ?
+    `, [userId]);
+
+    res.json({
+      success: true,
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      error: 'Ошибка удаления профиля',
+    });
+
+  }
+
 });
 
 // Альтернативный вариант (если понадобится)

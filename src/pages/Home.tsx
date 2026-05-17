@@ -39,6 +39,11 @@ function Home() {
     useState(false);
 
   const { user } = useAuth();
+  const [touchStart, setTouchStart] =
+	useState(0);
+
+  const [touchEnd, setTouchEnd] =
+	useState(0);
 
   useEffect(() => {
 
@@ -57,6 +62,30 @@ function Home() {
   const openPDF = () => {
     window.open(pdfPath, '_blank');
   };
+  
+  const handleSwipe = () => {
+
+  if (touchStart - touchEnd > 50) {
+
+    // свайп влево
+    setCurrentImageIndex((prev) =>
+      (prev + 1) % interiorImages.length
+    );
+
+  }
+
+  if (touchEnd - touchStart > 50) {
+
+    // свайп вправо
+    setCurrentImageIndex((prev) =>
+      prev === 0
+        ? interiorImages.length - 1
+        : prev - 1
+    );
+
+  }
+
+};
 
   return (
 
@@ -390,11 +419,27 @@ function Home() {
 
       {/* ================= HERO ================= */}
 
-      <section className="
-        relative
-        h-screen
-        pt-20
-      ">
+      <section
+  className="
+    relative
+    h-screen
+    pt-20
+  "
+
+  onTouchStart={(e) =>
+    setTouchStart(
+      e.targetTouches[0].clientX
+    )
+  }
+
+  onTouchMove={(e) =>
+    setTouchEnd(
+      e.targetTouches[0].clientX
+    )
+  }
+
+  onTouchEnd={handleSwipe}
+>
 
         {/* IMAGES */}
 

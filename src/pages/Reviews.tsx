@@ -657,25 +657,40 @@ const [selectedImage, setSelectedImage] =
 
         </div>
 
-        {/* REVIEWS */}
+     {/* REVIEWS */}
 
-        <div className="
-          grid
-          gap-6
-        ">
+<div
+  className="
+    flex
+    gap-4
+    overflow-x-auto
+    snap-x
+    snap-mandatory
+    pb-4
 
-          {reviews.map((review) => (
+    md:grid
+    md:gap-6
+  "
+>
 
-            <div
-              key={review.ID}
-              className="
-                bg-white
-                rounded-3xl
-                shadow
-                p-5
-                md:p-7
-              "
-            >
+  {reviews.map((review) => (
+
+    <div
+      key={review.ID}
+      className="
+        bg-white
+        rounded-3xl
+        shadow
+        p-5
+        md:p-7
+
+        min-w-[78vw]
+        snap-center
+        flex-shrink-0
+
+        md:min-w-0
+      "
+    >
 
               {/* TOP */}
 
@@ -800,7 +815,9 @@ const [selectedImage, setSelectedImage] =
 
 				className="
 				w-full
-				max-h-[500px]
+				h-44
+				md:max-h-[500px]
+				md:h-auto
 				object-cover
 				rounded-3xl
 				mb-5

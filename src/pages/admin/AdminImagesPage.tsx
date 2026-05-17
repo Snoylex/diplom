@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 
-// Описание интерфейса для формы (настройте под свои нужды)
 interface FormState {
-  foto: string;
-  [key: string]: any; 
+  Foto: string;
+  [key: string]: any;
 }
 
 export default function AdminImagesPage() {
   const [images, setImages] = useState<string[]>([]);
-  // Исправление: Добавлено отсутствующее состояние формы
   const [form, setForm] = useState<FormState>({ foto: '' });
 
   const loadImages = async () => {
@@ -39,13 +37,13 @@ export default function AdminImagesPage() {
   };
 
   return (
-    // Исправление: Убран лишний символ "<" и лишние закрывающие теги в конце
-    <div className="mt-8">
+    <div className="mt-8 px-2 sm:px-0">
       <h3 className="text-xl font-bold mb-4">
         Загруженные изображения
       </h3>
 
-      <div className="grid grid-cols-5 gap-4">
+      {/* адаптивная сетка */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
         {images.map((img) => (
           <div
             key={img}
@@ -60,8 +58,8 @@ export default function AdminImagesPage() {
             }
           >
             <img
-              src={`/images/dishes/${img}`}
-              className="w-full h-28 object-cover rounded-lg"
+              src={`/images/${img}`}
+              className="w-full h-24 sm:h-28 object-cover rounded-lg"
               alt={img}
             />
 
@@ -71,7 +69,7 @@ export default function AdminImagesPage() {
                 e.stopPropagation();
                 deleteImage(img);
               }}
-              className="mt-2 w-full bg-red-500 text-white py-1 rounded-lg"
+              className="mt-2 w-full bg-red-500 text-white py-1 rounded-lg text-sm"
             >
               Удалить
             </button>

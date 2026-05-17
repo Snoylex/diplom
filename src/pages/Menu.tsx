@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -30,6 +30,8 @@ export default function MenuPage() {
 
   const [activeCategory, setActiveCategory] =
     useState('all');
+
+  const [search, setSearch] = useState('');
 
   const [loading, setLoading] = useState(true);
 
@@ -101,19 +103,29 @@ export default function MenuPage() {
   // ====================================
 
   const filteredDishes =
-    Array.isArray(dishes)
+  Array.isArray(dishes)
 
-      ? (
-          activeCategory === 'all'
-            ? dishes
-            : dishes.filter(
-                (d) =>
-                  d.ID_kategorii ===
-                  Number(activeCategory)
-              )
-        )
+    ? (
+        activeCategory === 'all'
+          ? dishes
+          : dishes.filter(
+              (d) =>
+                d.ID_kategorii ===
+                Number(activeCategory)
+            )
+      ).filter((dish) => {
 
-      : [];
+        const dishName =
+          JSON.stringify(dish)
+            .toLowerCase();
+
+        return dishName.includes(
+          search.toLowerCase()
+        );
+
+      })
+
+    : [];
 
   // ====================================
   // LOADING
@@ -315,6 +327,47 @@ export default function MenuPage() {
             </Button>
 
           </div>
+
+        </div>
+
+        {/* ПОИСК */}
+
+        <div className="
+          relative
+          mb-6
+        ">
+
+          <Search
+            size={20}
+            className="
+              absolute
+              left-4
+              top-1/2
+              -translate-y-1/2
+              text-gray-400
+            "
+          />
+
+          <input
+            type="text"
+            placeholder="Поиск блюд..."
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
+            className="
+              w-full
+              bg-white
+              rounded-2xl
+              pl-12
+              pr-4
+              py-4
+              outline-none
+              border
+              border-gray-200
+              focus:border-orange-400
+            "
+          />
 
         </div>
 

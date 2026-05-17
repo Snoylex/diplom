@@ -200,6 +200,63 @@ export default function ProfilePage() {
 
   };
 
+
+// =========================
+// DELETE PROFILE
+// =========================
+
+const deleteProfile = async () => {
+
+  const confirmed = window.confirm(
+    'Вы точно хотите удалить профиль? Это действие нельзя отменить.'
+  );
+
+  if (!confirmed) return;
+
+  try {
+
+    const res = await fetch(
+
+      `/api/profile/${user.id}`,
+
+      {
+        method: 'DELETE',
+      }
+
+    );
+
+    if (res.ok) {
+
+      localStorage.removeItem(
+        'currentUser'
+      );
+
+      alert(
+        'Профиль удалён'
+      );
+
+      window.location.href = '/';
+
+    } else {
+
+      alert(
+        'Ошибка удаления'
+      );
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+      'Ошибка сервера'
+    );
+
+  }
+
+};
+
   // =========================
   // LOADING
   // =========================
@@ -707,6 +764,61 @@ export default function ProfilePage() {
           </div>
 
         </div>
+		
+		{/* ================= DELETE PROFILE ================= */}
+
+<div
+  className="
+    mt-8
+    bg-white
+    rounded-3xl
+    shadow-sm
+    border
+    border-red-100
+    p-5
+  "
+>
+
+  <h2
+    className="
+      text-xl
+      font-bold
+      text-red-600
+      mb-2
+    "
+  >
+    Удаление аккаунта
+  </h2>
+
+  <p
+    className="
+      text-gray-500
+      leading-7
+      mb-5
+    "
+  >
+    После удаления аккаунта
+    будут удалены ваши данные
+    и история заказов.
+  </p>
+
+  <button
+    onClick={deleteProfile}
+    className="
+      bg-red-500
+      hover:bg-red-600
+      text-white
+      px-6
+      py-4
+      rounded-2xl
+      font-medium
+      transition
+    "
+  >
+    Удалить профиль
+  </button>
+
+</div>
 
         {/* ================= ORDERS ================= */}
 
