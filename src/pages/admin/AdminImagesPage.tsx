@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 interface FormState {
-  Foto: string;
+  foto: string;
   [key: string]: any;
 }
 

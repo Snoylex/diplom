@@ -601,28 +601,48 @@ app.get('/api/categories', (req, res) => {
 app.get('/api/dishes', (req, res) => {
   const sql = `
     SELECT
-		m.ID,
-		m.ID_kategorii,
-		m.Name_blyuda,
-		m.Opisanie,
-		m.Foto,
-		m.Price AS original_price,
-		CASE
-			WHEN a.procent_skidki IS NOT NULL 
-			THEN ROUND(m.Price - (m.Price * a.procent_skidki / 100), 2)
-			ELSE m.Price
-		END AS Price,
-		a.procent_skidki,
-		a.aktiv AS aktsiya_aktiv,    
-		m.aktiv,
-		k.nazvanie_kategorii
-		FROM menu m
-		LEFT JOIN kategorii k ON m.ID_kategorii = k.ID
-		LEFT JOIN aktsiya a 
-		ON (a.id_tovara = m.ID OR a.id_kategorii = m.ID_kategorii)
-			AND a.aktiv = 1                    
-		WHERE m.aktiv = 1
-		ORDER BY k.nazvanie_kategorii, m.Name_blyuda
+    m.ID,
+    m.ID_kategorii,
+    m.Name_blyuda,
+    m.Opisanie,
+    m.Foto,
+    m.Price AS original_price,
+
+    MAX(
+      CASE
+        WHEN a.procent_skidki IS NOT NULL
+        THEN ROUND(
+          m.Price - (m.Price * a.procent_skidki / 100),
+          2
+        )
+        ELSE m.Price
+      END
+    ) AS Price,
+
+    MAX(a.procent_skidki) AS procent_skidki,
+
+    m.aktiv,
+    k.nazvanie_kategorii
+
+FROM menu m
+
+LEFT JOIN kategorii k
+  ON m.ID_kategorii = k.ID
+
+LEFT JOIN aktsiya a
+  ON (
+      a.id_tovara = m.ID
+      OR a.id_kategorii = m.ID_kategorii
+     )
+  AND a.aktiv = 1
+
+WHERE m.aktiv = 1
+
+GROUP BY m.ID
+
+ORDER BY
+  k.nazvanie_kategorii,
+  m.Name_blyuda
   `;
 
   db.query(sql, (err, result) => {
