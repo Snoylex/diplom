@@ -44,12 +44,12 @@ export default function DishModal({ dish, isOpen, onClose, onAddToOrder }: Props
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden">
+      <DialogContent className="w-[95vw] max-w-3xl p-0 overflow-hidden max-h-[90vh] overflow-y-auto">
         <div className="relative">
           <img 
             src={imageUrl}
             alt={name}
-            className="w-full h-80 object-cover"
+            className="w-full h-48 sm:h-64 md:h-80 object-cover"
             onError={(e) => (e.target as HTMLImageElement).src = '/images/dishes/default.jpg'}
           />
         </div>

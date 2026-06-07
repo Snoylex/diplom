@@ -10,9 +10,13 @@ import { useAuth } from '../context/AuthContext';
 
 import { Link } from 'react-router-dom';
 
+import { useRef } from 'react';
+
 export default function Reviews() {
 
   const { user } = useAuth();
+  
+  const reviewsRef = useRef<HTMLDivElement>(null);
 
   const [reviews, setReviews] =
     useState<any[]>([]);
@@ -624,13 +628,18 @@ const [selectedImage, setSelectedImage] =
         ">
 
           <select
-            value={sort}
+  value={sort}
+  onChange={(e) => {
+    setSort(e.target.value);
 
-            onChange={(e) =>
-              setSort(
-                e.target.value
-              )
-            }
+    setTimeout(() => {
+      reviewsRef.current?.scrollTo({
+        left: 0,
+        behavior: 'smooth',
+      });
+    }, 100);
+  }}
+			  
 
             className="
               border
@@ -659,6 +668,7 @@ const [selectedImage, setSelectedImage] =
 
     {/* REVIEWS */}
         <div
+		ref={reviewsRef}
           className="
             flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4
             md:grid md:gap-6
@@ -821,16 +831,22 @@ const [selectedImage, setSelectedImage] =
 
               {/* TEXT */}
 
-              <p className="
-                text-gray-700
-                text-base
-                md:text-lg
-                leading-relaxed
-              ">
+              <div
+				className="
+				text-gray-700
+				text-base
+				md:text-lg
+				leading-relaxed
 
-                {review.Otzyv}
-
-              </p>
+				max-h-40
+				md:max-h-none
+	
+				overflow-y-auto
+				pr-2
+			"
+			>
+			{review.Otzyv}
+				</div>
 
               {/* MODERATION */}
 

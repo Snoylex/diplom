@@ -105,17 +105,13 @@ function Home() {
       ">
 
         <div className="
-          max-w-7xl
-          mx-auto
-
-          px-4
-          sm:px-6
-
-          py-3
-
-          flex
-          items-center
-          justify-between
+          w-full
+		  px-4
+		  sm:px-6
+		  py-3
+		  flex
+		  items-center
+		  justify-between
         ">
 
           {/* LOGO */}
@@ -125,6 +121,7 @@ function Home() {
             items-center
             gap-3
             min-w-0
+			flex-1
           ">
 
             <div className="
@@ -180,6 +177,7 @@ function Home() {
           <button
             onClick={() => setIsMenuOpen(true)}
             className="
+			  
               flex
               items-center
               gap-2

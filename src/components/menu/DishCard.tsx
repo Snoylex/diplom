@@ -11,7 +11,7 @@ interface Props {
 
 export default function DishCard({ dish, onClick, onAddToCart }: Props) {
   const name = dish.Name_blyuda || 'Без названия';
-  const description = dish.Opisanie || 'Описание отсутствует';
+
   const price = dish.Price || '—';
   const photoName = dish.Foto || 'default.jpg';
 
@@ -39,7 +39,7 @@ export default function DishCard({ dish, onClick, onAddToCart }: Props) {
       <CardContent className="p-6 flex flex-col">
         <h3 className="font-bold text-xl mb-3 line-clamp-2">{name}</h3>
         <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 flex-grow">
-          {description}
+
         </p>
 
         <Button 
